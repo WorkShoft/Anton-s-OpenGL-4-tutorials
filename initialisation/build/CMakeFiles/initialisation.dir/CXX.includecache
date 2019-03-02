@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/mikel/opengl/anton/initialisation/initialisation.cpp
+GL/glew.h
+-
+GLFW/glfw3.h
+-
+stdio.h
+-
+
