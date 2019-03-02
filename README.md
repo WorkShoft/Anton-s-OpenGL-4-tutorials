@@ -1,1 +1,1 @@
-Code based on Anton Gerdelan's Open 4 book
+eCode based on Anton Gerdelan's OpenGL 4 book
