@@ -16,7 +16,7 @@ int main (){
   if (!restart_gl_log ()){}
     //fprintf(stderr, "ERROR: could not start GLFW3\n");
     gl_log("starting GLFW\n%s\n", glfwGetVersionString());
-    log_gl_params ();
+    
     glfwSetErrorCallback(glfw_error_callback);
 
 
@@ -48,8 +48,11 @@ GLFWwindow* window = glfwCreateWindow (640, 480, "Extended GL Init", NULL, NULL)
   glewExperimental = GL_TRUE;
   glewInit;
 
+  log_gl_params ();
   const GLubyte* renderer = glGetString (GL_RENDERER);
   const GLubyte* version =   glGetString (GL_VERSION);
+
+  
 
   printf("Renderer: %s\n", renderer);
   printf("OpenGL version supported %s\n", version);
