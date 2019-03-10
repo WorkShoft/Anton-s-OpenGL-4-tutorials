@@ -21,57 +21,57 @@ This project is developed in a Ubuntu 18.04 environment and built with CMake. It
 
 To install these libraries on Ubuntu run sudo apt install libglfw3 libglew-dev libglm
 
-Table of contents:
-Basics
-  "Hello Triangle" - OpenGL 4 Up and Running
-  Extended Initialisation
-  OpenGL 4 Shaders
-  Vertex Buffer Objects
-Transformation
-  Vectors and Matrices
-  Virtual Camera
-  Quaternion Quick-Start
-  Ray-Based Picking
-Lighting and Texture Maps
-  Phong Lighting
-  Texture Maps
-Tips and Tricks
-  Screen Capture
-  Video Capture
-  Debugging Shaders
-  Gamma Correction
-  Extension Checks and the Debug Callback
-  Uniform Buffer Objects and Mapping Buffers
-Mesh Files
-  Importing a Mesh File
+Table of contents:<br/>
+Basics<br/>
+  "Hello Triangle" - OpenGL 4 Up and Running<br/>
+  Extended Initialisation<br/>
+  OpenGL 4 Shaders<br/>
+  Vertex Buffer Objects<br/>
+Transformation<br/>
+  Vectors and Matrices<br/>
+  Virtual Camera<br/>
+  Quaternion Quick-Start<br/>
+  Ray-Based Picking<br/>
+Lighting and Texture Maps<br/>
+  Phong Lighting<br/>
+  Texture Maps<br/>
+Tips and Tricks<br/>
+  Screen Capture<br/>
+  Video Capture<br/>
+  Debugging Shaders<br/>
+  Gamma Correction<br/>
+  Extension Checks and the Debug Callback<br/>
+  Uniform Buffer Objects and Mapping Buffers<br/>
+Mesh Files<br/>
+  Importing a Mesh File<br/>
 More Advanced Lighting and Texture Effects
-  Multi-Texturing
-  Using Textures for Lighting Coefficients
-  Fragment Rejection
-  Alpha Blending for Transparency
-  Spotlights and Directional Lights
-  Distance Fog
-  Normal Mapping
-  Cube Maps: Sky Boxes and Environment Mapping
-New Shader Stages
-  Geometry Shaders
-  Tessellation Shaders
-2d Rendering
-  2d GUI Panels
-  Sprite Sheets and 2d Animation
-  Bitmap Fonts
-  Making a Font Atlas Generator Tool
-Animation
-  Particle Systems
-  Hardware Skinning Part 1: Bones
-  Hardware Skinning Part 2: Skeleton Hierarchies
-  Hardware Skinning Part 3: Key-Frame Animation
-Multi-Pass Rendering
-  Switching Framebuffer
-  Image Processing with a Kernel
-  Colour-Based Picking
-  Deferred Shading
-  Texture Projection Shadows
+  Multi-Texturing<br/>
+  Using Textures for Lighting Coefficients<br/>
+  Fragment Rejection<br/>
+  Alpha Blending for Transparency<br/>
+  Spotlights and Directional Lights<br/>
+  Distance Fog<br/>
+  Normal Mapping<br/>
+  Cube Maps: Sky Boxes and Environment Mapping<br/>
+New Shader Stages<br/>
+  Geometry Shaders<br/>
+  Tessellation Shaders<br/>
+2d Rendering<br/>
+  2d GUI Panels<br/>
+  Sprite Sheets and 2d Animation<br/>
+  Bitmap Fonts<br/>
+  Making a Font Atlas Generator Tool<br/>
+Animation<br/>
+  Particle Systems<br/>
+  Hardware Skinning Part 1: Bones<br/>
+  Hardware Skinning Part 2: Skeleton Hierarchies<br/>
+  Hardware Skinning Part 3: Key-Frame Animation<br/>
+Multi-Pass Rendering<br/>
+  Switching Framebuffer<br/>
+  Image Processing with a Kernel<br/>
+  Colour-Based Picking<br/>
+  Deferred Shading<br/>
+  Texture Projection Shadows<br/>
 
 
 Early project drafts can be found at misc. Only some of those programs work but the ones that don't should be easily fixable.
