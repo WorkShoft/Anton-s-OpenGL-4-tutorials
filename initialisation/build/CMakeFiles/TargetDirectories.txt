@@ -1,3 +1,0 @@
-/home/mikel/opengl/anton/initialisation/build/CMakeFiles/rebuild_cache.dir
-/home/mikel/opengl/anton/initialisation/build/CMakeFiles/initialisation.dir
-/home/mikel/opengl/anton/initialisation/build/CMakeFiles/edit_cache.dir

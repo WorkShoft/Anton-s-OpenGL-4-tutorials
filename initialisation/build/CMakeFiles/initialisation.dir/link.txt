@@ -1,1 +1,0 @@
-/usr/bin/c++     CMakeFiles/initialisation.dir/initialisation.cpp.o  -o initialisation /usr/lib/x86_64-linux-gnu/libGL.so -lglfw /usr/lib/x86_64-linux-gnu/libGLEW.so 
