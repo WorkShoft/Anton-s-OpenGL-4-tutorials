@@ -1,10 +1,12 @@
 Code based on Anton Gerdelan's OpenGL 4 book.
 
-Each chapter in the book has its own folder. Inside the chapter there is a folder for each section, which contains its program.
+Each chapter in the book has its own folder. Inside that folder there is another one for each section. Every section contains a main.cpp program and a CMake script that builds it.
 
 root->
        chapter->
-                 section/program
+                 section->
+			   program
+				 
 
 To compile an example:
 1) Move to its folder
@@ -73,5 +75,7 @@ Multi-Pass Rendering<br/>
   Deferred Shading<br/>
   Texture Projection Shadows<br/>
 
-
+<br/>
 Early project drafts can be found at misc. Only some of those programs work but the ones that don't should be easily fixable.
+
+
