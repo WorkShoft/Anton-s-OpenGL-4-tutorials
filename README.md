@@ -12,10 +12,10 @@ To compile an example:
 3) cmake ..
 4) make
 
-Requirements:	
-GLFW  
-GLEW
-GLM
+Requirements:	<br/>
+GLFW  <br/>
+GLEW<br/>
+GLM<br/>
 
 This project is developed in a Ubuntu 18.04 environment and built with CMake. It should work on most modern Linux distributions once the required libraries are installed.
 
