@@ -1,6 +1,12 @@
-Code based on Anton Gerdelan's OpenGL 4 book
+Code based on Anton Gerdelan's OpenGL 4 book.
 
-to compile an example:
+Each chapter in the book has its own folder. Inside the chapter there is a folder for each section, which contains its program.
+
+root->
+       chapter->
+                 section/program
+
+To compile an example:
 1) Move to its folder
 2) mkdir build && cd build
 3) cmake ..
@@ -11,7 +17,7 @@ GLFW
 GLEW
 GLM
 
-This project is developed in an Ubuntu 18.04 environment and built with CMake. It should work in most modern Linux distributions once the required libraries are installed.
+This project is developed in an Ubuntu 18.04 environment and built with CMake. It should work on most modern Linux distributions once the required libraries are installed.
 
 Early project drafts can be found at misc. Only some of those programs work but the ones that don't should be easily fixable.
 
