@@ -12,15 +12,14 @@ To compile an example:
 3) cmake ..
 4) make
 
-Requirements:
-GLFW 
+Requirements:	
+GLFW  
 GLEW
 GLM
 
-This project is developed in an Ubuntu 18.04 environment and built with CMake. It should work on most modern Linux distributions once the required libraries are installed.
+This project is developed in a Ubuntu 18.04 environment and built with CMake. It should work on most modern Linux distributions once the required libraries are installed.
 
-Early project drafts can be found at misc. Only some of those programs work but the ones that don't should be easily fixable.
-
+To install these libraries on Ubuntu run sudo apt install libglfw3 libglew-dev libglm
 
 Table of contents:
 Basics
@@ -73,3 +72,6 @@ Multi-Pass Rendering
   Colour-Based Picking
   Deferred Shading
   Texture Projection Shadows
+
+
+Early project drafts can be found at misc. Only some of those programs work but the ones that don't should be easily fixable.
