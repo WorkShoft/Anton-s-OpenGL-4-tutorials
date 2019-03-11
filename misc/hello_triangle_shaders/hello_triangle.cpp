@@ -32,6 +32,16 @@ different order than previous versions of OS X.
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+
+// https://stackoverflow.com/questions/14920675/is-there-a-function-in-c-language-to-calculate-degrees-radians
+inline double to_degrees(double radians) {  
+  return radians * (180.0 / M_PI);
+}
+
+inline double to_radians(double degrees) {  
+  return degrees * (M_PI / 180);
+}
+
 int main() {
 	GLFWwindow *window = NULL;
 	const GLubyte *renderer;
@@ -41,23 +51,30 @@ int main() {
 
 	/* geometry to use. these are 3 xyz points (9 floats total) to make a triangle */
 	GLfloat points[] = { 0.0f, 0.5f, 0.0f, 0.5f, -0.5f, 0.0f, -0.5f, -0.5f, 0.0f };
+	float colours[] = {0.2f, 0.3f, 0.1f, 0.2f, -0.2f, 0.0f, -0.8f, -0.2f, 0.7f };
+
+	
 
 	/* these are the strings of code for the shaders
 	the vertex shader positions each vertex point */
 const char* vertex_shader =
-"#version 410\n"
-"in vec3 vp;"
-"void main () {"
-"gl_Position = vec4 (vp, 1.0);"
-"}";
+  "#version 410\n"
+  "layout (location=0) in vec3 vp;"
+  "layout (location=1) in vec3 colour;"
+  "out vec3 trigColour;"
+  "void main () {"
+  "gl_Position = vec4 (vp, 1.0);"
+  "trigColour=colour;"
+  "}";
 
 	/* the fragment shader colours each fragment (pixel-sized area of the
 	triangle) */
 	const char *fragment_shader = "#version 410\n"
-																"out vec4 frag_colour;"
-																"void main () {"
-																"  frag_colour = vec4(0.5, 0.0, 0.5, 1.0);"
-																"}";
+	  "in vec3 trigColour;"
+	  "out vec4 frag_colour;"
+	  "void main () {"
+	  "frag_colour = vec4(trigColour, 1.0);"
+	  "}";
 
 	/* GL shader objects for vertex and fragment shader [components] */
 	GLuint vert_shader, frag_shader;
@@ -105,6 +122,8 @@ const char* vertex_shader =
 	glBindBuffer( GL_ARRAY_BUFFER, vbo );
 	glBufferData( GL_ARRAY_BUFFER, 9 * sizeof( GLfloat ), points, GL_STATIC_DRAW );
 
+	
+
 	/* the vertex array object (VAO) is a little descriptor that defines which
 	data from vertex buffer objects should be used as input variables to vertex
 	shaders. in our case - use our only VBO, and say 'every three floats is a
@@ -119,6 +138,11 @@ const char* vertex_shader =
 	/* "attribute #0 is created from every 3 variables in the above buffer, of type
 	float (i.e. make me vec3s)" */
 	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, NULL );
+
+
+	// colours
+	glEnableVertexAttribArray( 1 );	
+	glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 	/* here we copy the shader strings into GL shaders, and compile them. we
 	then create an executable shader 'program' and attach both of the compiled
@@ -135,6 +159,8 @@ const char* vertex_shader =
 	glAttachShader( shader_programme, vert_shader );
 	glLinkProgram( shader_programme );
 
+
+
 	/* this loop clears the drawing surface, then draws the geometry described
 			by the VAO onto the drawing surface. we 'poll events' to see if the window
 	was closed, etc. finally, we 'swap the buffers' which displays our drawing
@@ -145,24 +171,36 @@ const char* vertex_shader =
 
 	glm::mat4 trans = glm::mat4(1.0f);
 
+		
+
+
 
 	while ( !glfwWindowShouldClose( window ) ) {
 	  //glRotatef(45, 0, 0, 1);
-trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+	  trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
 	  trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 
-		/* wipe the drawing surface clear */
-		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-		glUseProgram( shader_programme );
-		glBindVertexArray( vao );
-		/* draw points 0-3 from the currently bound VAO with current in-use shader */
-		glDrawArrays( GL_TRIANGLES, 0, 3 );
-		/* update other events like input handling */
-		glfwPollEvents();
-		/* put the stuff we've been drawing onto the display */
-		glfwSwapBuffers( window );
+	  double currTime = glfwGetTime();
+	  double currRad = to_radians(currTime);
+	  //printf("%.2f\n", currDeg);
+
+	  
+	  for(int c=0; c<9; c++){
+	    colours[c] = 0.0;
+	  }
+	  //printf("%.3f\n", currTime);
 
 
+	  /* wipe the drawing surface clear */
+	  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	  glUseProgram( shader_programme );
+	  glBindVertexArray( vao );
+	  /* draw points 0-3 from the currently bound VAO with current in-use shader */
+	  glDrawArrays( GL_TRIANGLES, 0, 3 );
+	  /* update other events like input handling */
+	  glfwPollEvents();
+	  /* put the stuff we've been drawing onto the display */
+	  glfwSwapBuffers( window );
 
 
 
