@@ -49,31 +49,37 @@ int main() {
 	GLuint vao;
 	GLuint vbo;
 
+	GLuint colorBuffer;
+
 	/* geometry to use. these are 3 xyz points (9 floats total) to make a triangle */
-	GLfloat points[] = { 0.0f, 0.5f, 0.0f, 0.5f, -0.5f, 0.0f, -0.5f, -0.5f, 0.0f };
-	float colours[] = {0.2f, 0.3f, 0.1f, 0.2f, -0.2f, 0.0f, -0.8f, -0.2f, 0.7f };
-
+	GLfloat points[] = {
+	  0.0f, 0.5f, 0.0f,
+	  0.5f, -0.5f, 0.0f,
+	  -0.5f, -0.5f, -0.0f
+	};
+  
+	GLfloat colours[] = {0.0f, 1.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f };
 	
-
+       
 	/* these are the strings of code for the shaders
-	the vertex shader positions each vertex point */
-const char* vertex_shader =
-  "#version 410\n"
-  "layout (location=0) in vec3 vp;"
-  "layout (location=1) in vec3 colour;"
-  "out vec3 trigColour;"
-  "void main () {"
-  "gl_Position = vec4 (vp, 1.0);"
-  "trigColour=colour;"
-  "}";
+	   the vertex shader positions each vertex point */
+	const char* vertex_shader =
+	  "#version 410\n"
+	  "layout (location=0) in vec3 vp;"
+	  "layout (location=1) in vec3 colour;"
+	  "out vec3 trig_colour;"
+	  "void main () {"
+	  "gl_Position = vec4 (vp, 1.0);"
+	  "trig_colour=colour;"
+	  "}";
 
 	/* the fragment shader colours each fragment (pixel-sized area of the
-	triangle) */
+	   triangle) */
 	const char *fragment_shader = "#version 410\n"
-	  "in vec3 trigColour;"
+	  "in vec3 trig_colour;"
 	  "out vec4 frag_colour;"
 	  "void main () {"
-	  "frag_colour = vec4(trigColour, 1.0);"
+	  "frag_colour= vec4(trig_colour, 1.0);"
 	  "}";
 
 	/* GL shader objects for vertex and fragment shader [components] */
@@ -89,8 +95,8 @@ const char* vertex_shader =
 
 	glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
 	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 1 );
-	 glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
-	 glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
+	glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE );
+	glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
 
 	window = glfwCreateWindow( 640, 480, "Hello Triangle", NULL, NULL );
 	if ( !window ) {
@@ -120,8 +126,7 @@ const char* vertex_shader =
 	data on the graphics adapter's memory. in our case - the vertex points */
 	glGenBuffers( 1, &vbo );
 	glBindBuffer( GL_ARRAY_BUFFER, vbo );
-	glBufferData( GL_ARRAY_BUFFER, 9 * sizeof( GLfloat ), points, GL_STATIC_DRAW );
-
+	glBufferData( GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW );
 	
 
 	/* the vertex array object (VAO) is a little descriptor that defines which
@@ -131,18 +136,33 @@ const char* vertex_shader =
 	glGenVertexArrays( 1, &vao );
 	glBindVertexArray( vao );
 	/* "attribute #0 should be enabled when this vao is bound" */
-	glEnableVertexAttribArray( 0 );
+	
 	/* this VBO is already bound, but it's a good habit to explicitly specify which
 	VBO's data the following vertex attribute pointer refers to */
 	glBindBuffer( GL_ARRAY_BUFFER, vbo );
 	/* "attribute #0 is created from every 3 variables in the above buffer, of type
 	float (i.e. make me vec3s)" */
-	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, NULL );
 
+	
+	// position attribute
+	glEnableVertexAttribArray( 0 );
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-	// colours
-	glEnableVertexAttribArray( 1 );	
-	glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+glGenBuffers(1, &colorBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*9, colours, GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(1);
+     glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+     glVertexAttribPointer(
+    			  1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
+    			  3,                                // size
+    			  GL_FLOAT,                         // type
+    			  GL_FALSE,                         // normalized?
+    			  0,                                // stride
+    			  (void*)0                          // array buffer offset
+    			  );
+
 
 	/* here we copy the shader strings into GL shaders, and compile them. we
 	then create an executable shader 'program' and attach both of the compiled
@@ -160,7 +180,6 @@ const char* vertex_shader =
 	glLinkProgram( shader_programme );
 
 
-
 	/* this loop clears the drawing surface, then draws the geometry described
 			by the VAO onto the drawing surface. we 'poll events' to see if the window
 	was closed, etc. finally, we 'swap the buffers' which displays our drawing
@@ -171,39 +190,35 @@ const char* vertex_shader =
 
 	glm::mat4 trans = glm::mat4(1.0f);
 
-		
-
-
-
+	
 	while ( !glfwWindowShouldClose( window ) ) {
 	  //glRotatef(45, 0, 0, 1);
-	  trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-	  trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+	  // trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+	  // trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 
 	  double currTime = glfwGetTime();
 	  double currRad = to_radians(currTime);
+	  double sinRad = sin(currRad);
+	  double cosRad = cos(currRad);
+
+	  colours[1] += 0.1f;
 	  //printf("%.2f\n", currDeg);
 
 	  
-	  for(int c=0; c<9; c++){
-	    colours[c] = 0.0;
-	  }
-	  //printf("%.3f\n", currTime);
-
+	  
 
 	  /* wipe the drawing surface clear */
 	  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	  glUseProgram( shader_programme );
+
 	  glBindVertexArray( vao );
+	  
 	  /* draw points 0-3 from the currently bound VAO with current in-use shader */
 	  glDrawArrays( GL_TRIANGLES, 0, 3 );
 	  /* update other events like input handling */
 	  glfwPollEvents();
 	  /* put the stuff we've been drawing onto the display */
 	  glfwSwapBuffers( window );
-
-
-
 	}
 
 	/* close GL context and any other GLFW resources */
