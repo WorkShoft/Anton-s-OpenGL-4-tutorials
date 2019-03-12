@@ -77,6 +77,7 @@ int main() {
 	   triangle) */
 	const char *fragment_shader = "#version 410\n"
 	  "in vec3 trig_colour;"
+
 	  "out vec4 frag_colour;"
 	  "void main () {"
 	  "frag_colour= vec4(trig_colour, 1.0);"
@@ -99,6 +100,7 @@ int main() {
 	glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
 
 	window = glfwCreateWindow( 640, 480, "Hello Triangle", NULL, NULL );
+	
 	if ( !window ) {
 		fprintf( stderr, "ERROR: could not open window with GLFW3\n" );
 		glfwTerminate();
@@ -148,9 +150,9 @@ int main() {
 	glEnableVertexAttribArray( 0 );
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-glGenBuffers(1, &colorBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*9, colours, GL_STATIC_DRAW);
+    glGenBuffers(1, &colorBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*9, colours, GL_DYNAMIC_DRAW);
 
     glEnableVertexAttribArray(1);
      glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
@@ -197,15 +199,29 @@ glGenBuffers(1, &colorBuffer);
 	  // trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 
 	  double currTime = glfwGetTime();
-	  double currRad = to_radians(currTime);
-	  double sinRad = sin(currRad);
-	  double cosRad = cos(currRad);
+	  //double currRad = to_radians(currTime);
+	  double sinRad = sin(currTime);
+	  double cosRad = cos(currTime);
 
-	  colours[1] += 0.1f;
+	  
+
+
 	  //printf("%.2f\n", currDeg);
 
-	  
-	  
+
+	  for(int i=0; i<9; i++){
+	    if(i % 2 == 0){
+	      colours[i] = cosRad - sinRad * (float)rand()/(float)(RAND_MAX/10);
+	    }
+
+	    else{
+	      colours[i] = sinRad - cosRad * (float)rand()/(float)(RAND_MAX/10);
+	    }
+	  }
+
+	  glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*9, colours, GL_DYNAMIC_DRAW);	    
+	  glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);	  
+
 
 	  /* wipe the drawing surface clear */
 	  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
