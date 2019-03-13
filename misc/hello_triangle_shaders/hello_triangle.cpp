@@ -58,7 +58,7 @@ int main() {
 	  -0.5f, -0.5f, -0.0f
 	};
   
-	GLfloat colours[] = {0.0f, 1.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f };
+	GLfloat colours[] = {1.0f, 1.0f, 1.0f, 0.5f, 1.0f, 1.0f, 0.0f, 1.0f, 0.3f };
 	
        
 	/* these are the strings of code for the shaders
@@ -199,24 +199,31 @@ int main() {
 	  // trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 
 	  double currTime = glfwGetTime();
-	  //double currRad = to_radians(currTime);
-	  double sinRad = sin(currTime);
-	  double cosRad = cos(currTime);
-
+	  double sinTime = sin(currTime);
+	  double cosTime = cos(currTime);
+	  double tanTime = tan(currTime);
+	 
+	  //printf("%.2f\n", currTime);
 	  
-
-
-	  //printf("%.2f\n", currDeg);
-
-
 	  for(int i=0; i<9; i++){
-	    if(i % 2 == 0){
-	      colours[i] = cosRad - sinRad * (float)rand()/(float)(RAND_MAX/10);
+	    //printf("%.2f\n", std::fmod(currTime, 1.0f));
+	    if(std::fmod(currTime, 1.0f) > 0.75f){
+	      if(i % 2 == 0){
+		colours[i] = sinTime * (float)rand()/(float)(RAND_MAX/80); // * (float)rand()/(float)(RAND_MAX/10) / 10;
+		colours[i] += 0.01f;//+= tanTime * 5.0f - sinTime / 4;
+	      }
+
+	      else{
+		colours[i] = cosTime * (float)rand()/(float)(RAND_MAX/30);
+		colours[i] += tanTime * 3.0f;// * tanTime / 20;
+	      }
 	    }
 
 	    else{
-	      colours[i] = sinRad - cosRad * (float)rand()/(float)(RAND_MAX/10);
+	      colours[i] += cosTime * 0.2f;
 	    }
+
+
 	  }
 
 	  glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*9, colours, GL_DYNAMIC_DRAW);	    
