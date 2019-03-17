@@ -103,10 +103,7 @@ int main() {
     glfwPollEvents();
     if(GLFW_PRESS == glfwGetKey(window, GLFW_KEY_ESCAPE)){
       glfwSetWindowShouldClose(window, 1);
-    }
-
-    
-
+    }  
   }
 
   glfwTerminate();
