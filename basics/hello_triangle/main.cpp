@@ -32,21 +32,22 @@ int main() {
     -0.5f, -0.5f, 0.0f,
   };
 
-  //char* vertex_shader = get_shader("hello_triangle.vs");
-  //char* fragment_shader = get_shader("hello_triangle.fs");
-  const char* vertex_shader =
-"#version 410\n"
-"in vec3 vp;"
-"void main () {"
-"gl_Position = vec4 (vp, 1.0);"
-"}";
+  char* vertex_shader = get_shader("../hello_triangle.vs");
+  char* fragment_shader = get_shader("../hello_triangle.fs");
 
-  const char* fragment_shader =
-    "#version 410\n"
-    "out vec4 frag_colour;"
-    "void main () {"
-    "frag_colour = vec4 (0.5, 0.0, 0.5, 1.0);"
-    "}";
+  // const char* vertex_shader =
+// "#version 410\n"
+// "in vec3 vp;"
+// "void main () {"
+// "gl_Position = vec4 (vp, 1.0);"
+// "}";
+
+//   const char* fragment_shader =
+//     "#version 410\n"
+//     "out vec4 frag_colour;"
+//     "void main () {"
+//     "frag_colour = vec4 (0.5, 0.0, 0.5, 1.0);"
+//     "}";
   
   printf("%s ", vertex_shader);
 
@@ -78,6 +79,9 @@ int main() {
   glAttachShader (shader_programme, vs);
   glLinkProgram (shader_programme);
 
+  // free char buffer once the shader programme has been compiled
+  free(vertex_shader);
+  free(fragment_shader);
 
   while(!glfwWindowShouldClose(window)){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
