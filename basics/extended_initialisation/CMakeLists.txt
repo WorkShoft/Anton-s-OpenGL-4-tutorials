@@ -32,6 +32,13 @@ find_package(GLEW REQUIRED)
 if (GLEW_FOUND)
     include_directories(${GLEW_INCLUDE_DIRS})
     target_link_libraries(main ${GLEW_LIBRARIES})
+  endif()
+
+#GLUT
+find_package(GLUT REQUIRED)
+if (GLUT_FOUND)
+    include_directories(${GLUT_INCLUDE_DIRS})
+    target_link_libraries(main ${GLUT_LIBRARIES})    
 endif()
 
 

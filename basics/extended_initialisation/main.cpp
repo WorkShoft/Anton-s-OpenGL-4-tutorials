@@ -92,7 +92,13 @@ int main() {
   free(vertex_shader);
   free(fragment_shader);
 
+  int argc = 1;
+  char *argv[1] = {(char*)"Something"};
+  glutInit(&argc, argv);
+
+
   while(!glfwWindowShouldClose(window)){
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, g_fb_width, g_fb_height);
     glUseProgram(shader_programme);
@@ -103,6 +109,8 @@ int main() {
     if(GLFW_PRESS == glfwGetKey(window, GLFW_KEY_ESCAPE)){
       glfwSetWindowShouldClose(window, 1);
     }
+
+    
 
   }
 
