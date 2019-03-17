@@ -92,11 +92,6 @@ int main() {
   free(vertex_shader);
   free(fragment_shader);
 
-  int argc = 1;
-  char *argv[1] = {(char*)"Something"};
-  glutInit(&argc, argv);
-
-
   while(!glfwWindowShouldClose(window)){
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
