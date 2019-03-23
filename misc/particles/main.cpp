@@ -38,7 +38,7 @@ GLuint gen_particles() {
 		vt[i] = t_accum;
 		t_accum += 0.01f; // spacing for start times is 0.01 seconds
 		// start velocities. randomly vary x and z components
-		float randx = ( (float)rand() / (float)RAND_MAX ) * 1.0f - 0.5f;
+		float randx = ( (float)rand() / (float)RAND_MAX ) * 1.5f - 0.5f;
 		float randz = ( (float)rand() / (float)RAND_MAX ) * 1.0f - 0.5f;
 		vv[j] = randx;		 // x
 		vv[j + 1] = 1.0f;	// y
@@ -108,6 +108,7 @@ int main() {
 	/* make up a world position for the emitter */
 	vec3 emitter_world_pos( 0.0f, 0.0f, 0.0f );
 
+
 	// locations of view and projection matrices
 	int V_loc = glGetUniformLocation( shader_programme, "V" );
 	assert( V_loc > -1 );
@@ -120,10 +121,15 @@ int main() {
 		glGetUniformLocation( shader_programme, "elapsed_system_time" );
 	assert( elapsed_system_time_loc > -1 );
 	glUseProgram( shader_programme );
+
 	glUniformMatrix4fv( V_loc, 1, GL_FALSE, view_mat.m );
 	glUniformMatrix4fv( P_loc, 1, GL_FALSE, proj_mat );
 	glUniform3f( emitter_pos_wor_loc, emitter_world_pos.v[0], emitter_world_pos.v[1],
 							 emitter_world_pos.v[2] );
+	int colours = glGetUniformLocation( shader_programme, "colours");
+
+
+	
 
 	// load texture
 	GLuint tex;
@@ -150,8 +156,10 @@ int main() {
 		previous_seconds = current_seconds;
 
 		_update_fps_counter( g_window );
+
 		// wipe the drawing surface clear
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+		
 		glViewport( 0, 0, g_gl_width, g_gl_height );
 
 		/* Render Particles. Enabling point re-sizing in vertex shader */
@@ -166,13 +174,18 @@ int main() {
 
 		/* update time in shaders */
 		glUniform1f( elapsed_system_time_loc, (GLfloat)current_seconds );
+		glUseProgram( shader_programme );
 
+		glUniform4f(colours, (GLfloat)current_seconds, 0.2f, 0.3f, 0.8f);
+		
 		glBindVertexArray( vao );
 		// draw points 0-3 from the currently bound VAO with current in-use shader
 		glDrawArrays( GL_POINTS, 0, PARTICLE_COUNT );
 		glDisable( GL_BLEND );
 		glDepthMask( GL_TRUE );
 		glDisable( GL_PROGRAM_POINT_SIZE );
+
+		
 
 		// update other events like input handling
 		glfwPollEvents();
@@ -211,18 +224,20 @@ int main() {
 			cam_yaw -= cam_yaw_speed * elapsed_seconds;
 			cam_moved = true;
 		}
+		
 		// update view matrix
 		if ( cam_moved ) {
-			mat4 T = translate( identity_mat4(), vec3( -cam_pos[0], -cam_pos[1],
-																								 -cam_pos[2] ) ); // cam translation
-			mat4 R = rotate_y_deg( identity_mat4(), -cam_yaw );					//
-			mat4 view_mat = R * T;
-			glUniformMatrix4fv( V_loc, 1, GL_FALSE, view_mat.m );
+		  mat4 T = translate( identity_mat4(), vec3( -cam_pos[0], -cam_pos[1],
+							     -cam_pos[2] ) ); // cam translation
+		  mat4 R = rotate_y_deg( identity_mat4(), -cam_yaw );					//
+		  mat4 view_mat = R * T;
+		  glUniformMatrix4fv( V_loc, 1, GL_FALSE, view_mat.m );
 		}
 
 		if ( GLFW_PRESS == glfwGetKey( g_window, GLFW_KEY_ESCAPE ) ) {
 			glfwSetWindowShouldClose( g_window, 1 );
 		}
+
 		// put the stuff we've been drawing onto the display
 		glfwSwapBuffers( g_window );
 	}
