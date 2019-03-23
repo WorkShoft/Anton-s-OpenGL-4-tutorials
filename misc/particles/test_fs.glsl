@@ -3,9 +3,11 @@
 
 in float opacity;
 uniform sampler2D tex; // optional. enable point-sprite coords to use
+uniform vec4 colours;
 out vec4 frag_colour;
 
-vec4 particle_colour = vec4 (0.4, 0.4, 0.8, 0.8); 
+vec4 particle_colour = colours;
+
 
 void main () {
 	// using point texture coordinates which are pre-defined over the point
