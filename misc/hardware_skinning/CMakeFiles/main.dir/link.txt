@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/main.dir/main.cpp.o CMakeFiles/main.dir/gl_utils.cpp.o CMakeFiles/main.dir/maths_funcs.cpp.o  -o main /usr/lib/x86_64-linux-gnu/libGL.so -lassimp -lglfw /usr/lib/x86_64-linux-gnu/libGLEW.so 
