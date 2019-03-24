@@ -27,14 +27,24 @@
 #define GL_LOG_FILE "gl.log"
 #define VERTEX_SHADER_FILE "test_vs.glsl"
 #define FRAGMENT_SHADER_FILE "test_fs.glsl"
-
+#define MAX_BONES 32
 
 int g_gl_width = 640;
 int g_gl_height = 480;
 GLFWwindow *g_window = NULL;
 
 
-bool load_mesh(const char* file_name, GLuint* vao, int* point_count){
+mat4 convert_assimp_matrix(aiMatrix4x4 m){
+  return mat4 (
+	       1.0f, 0.0f, 0.0f, 0.0f,
+	       0.0f, 1.0f, 0.0f, 0.0f,
+	       0.0f, 0.0f, 1.0f, 0.0f,
+	       m.a4, m.b4, m.c4, m.d4
+);
+}
+
+
+bool load_mesh(const char* file_name, GLuint* vao, int* point_count, mat4* bone_offset_mats, int* bone_count){
   const aiScene* scene = aiImportFile(file_name, aiProcess_Triangulate);
   if(!scene){
     fprintf(stderr, "ERROR: reading mesh %s\n", file_name);
@@ -60,6 +70,9 @@ printf (" %i textures\n", scene->mNumTextures);
   GLfloat* points = NULL;
   GLfloat* normals =  NULL;
   GLfloat* texcoords = NULL;
+  GLint* bone_ids = NULL;
+
+      
   if(mesh -> HasPositions()){
     points = (GLfloat*)malloc (*point_count * 3 * sizeof (GLfloat));
     for(int i = 0; i < *point_count; i++){
@@ -119,6 +132,7 @@ printf (" %i textures\n", scene->mNumTextures);
   }
   if(mesh -> HasTextureCoords (0)){
     GLuint vbo;
+    
     glGenBuffers (1, &vbo);
     glBindBuffer (GL_ARRAY_BUFFER, vbo);
     glBufferData(
@@ -131,15 +145,57 @@ printf (" %i textures\n", scene->mNumTextures);
     glEnableVertexAttribArray(2);
     free (texcoords);
   }
+
   if( mesh -> HasTangentsAndBitangents ()){
     /* TODO */
   }
+
+  /* skinning code */
+
+  if(mesh->HasBones()){
+    *bone_count = (int)mesh->mNumBones;
+    char bone_names[256][64];
+
+    for(int b_i=0; b_i < *bone_count; b_i++){
+      const aiBone* bone = mesh->mBones[b_i];
+      strcpy (bone_names[b_i], bone->mName.data);
+      printf("bone_names[%i]=%s\n", b_i, bone_names[b_i]);
+      bone_offset_mats[b_i] = convert_assimp_matrix( bone -> mOffsetMatrix);
+      bone_ids = (int*)malloc(*point_count * sizeof (int));
+
+      /* bone weights */
+      int num_weights = (int)bone->mNumWeights;
+      for (int w_i = 0; w_i < num_weights; w_i++){
+	aiVertexWeight weight = bone->mWeights[w_i];
+	int vertex_id = (int)weight.mVertexId;
+	// ignore weight if less than 0.5 factor
+	if(weight.mWeight >= 0.5f){
+	  bone_ids[vertex_id] = b_i;
+	}
+      }
+    }
+
+    /* bone vbo */
+
+    GLuint vbo;
+    glGenBuffers (1, &vbo);
+    glBindBuffer (GL_ARRAY_BUFFER, vbo);
+    glBufferData(
+		 GL_ARRAY_BUFFER,
+		 *point_count * sizeof (GLint),
+		 bone_ids,
+		 GL_STATIC_DRAW
+		 );
+    glVertexAttribIPointer(3, 1, GL_INT, 0, NULL);
+    glEnableVertexAttribArray (3);
+    free (bone_ids);
+  }
+ 
 
   aiReleaseImport(scene);
   printf("mesh loaded\n");
   return true;
 }
-
 
 
 int main() {
@@ -156,9 +212,15 @@ int main() {
 	glClearColor( 0.2, 0.2, 0.2, 1.0 );
 
 	GLuint monkey_vao;
+	mat4 monkey_bone_offset_matrices[MAX_BONES];	
 	int monkey_point_count = 0;
+	int monkey_bone_count;
 	
-	assert(load_mesh(MESH_FILE, &monkey_vao, &monkey_point_count));
+	assert(load_mesh(MESH_FILE,
+			 &monkey_vao,
+			 &monkey_point_count,
+			 monkey_bone_offset_matrices,
+			 &monkey_bone_count));
 
 	GLuint shader_programme =
 	  create_programme_from_files( VERTEX_SHADER_FILE, FRAGMENT_SHADER_FILE );
@@ -196,7 +258,7 @@ int main() {
 	glUniformMatrix4fv( proj_mat_location, 1, GL_FALSE, proj_mat );
 
 
-	// load textures
+	//load textures
 	int tex_a_location = glGetUniformLocation( shader_programme, "texture1" );	
 	glUniform1i( tex_a_location, 0 );
 
