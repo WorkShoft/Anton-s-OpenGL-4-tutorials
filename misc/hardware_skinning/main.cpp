@@ -17,20 +17,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <iostream>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <assimp/cimport.h>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <stdlib.h>
-#define MESH_FILE "../resources/Mario2animated.obj"
+#define MESH_FILE "../resources/Mario2.dae"
 #define GL_LOG_FILE "gl.log"
 #define VERTEX_SHADER_FILE "test_vs.glsl"
 #define FRAGMENT_SHADER_FILE "test_fs.glsl"
 #define MAX_BONES 32
 
-int g_gl_width = 640;
-int g_gl_height = 480;
+int g_gl_width = 1000;
+int g_gl_height = 600;
+
 GLFWwindow *g_window = NULL;
 
 
@@ -40,7 +45,7 @@ mat4 convert_assimp_matrix(aiMatrix4x4 m){
 	       0.0f, 1.0f, 0.0f, 0.0f,
 	       0.0f, 0.0f, 1.0f, 0.0f,
 	       m.a4, m.b4, m.c4, m.d4
-);
+	       );
 }
 
 
@@ -59,9 +64,9 @@ printf (" %i textures\n", scene->mNumTextures);
  
   printf(" %i vertices\n", scene->mNumTextures);
 
-  const aiMesh* mesh = scene->mMeshes[0];
+  const aiMesh* mesh = scene->mMeshes[2];
   printf(" %i vertices in mesh[0]\n", mesh->mNumVertices);
-
+  
   *point_count = mesh->mNumVertices;
 
   glGenVertexArrays(1, vao);
@@ -153,10 +158,13 @@ printf (" %i textures\n", scene->mNumTextures);
   /* skinning code */
 
   if(mesh->HasBones()){
+    std::cout << "Mesh has bones!" << std::endl;
     *bone_count = (int)mesh->mNumBones;
-    char bone_names[256][64];
 
+    char bone_names[256][64];
+  
     for(int b_i=0; b_i < *bone_count; b_i++){
+      std::cout << b_i << std::endl;
       const aiBone* bone = mesh->mBones[b_i];
       strcpy (bone_names[b_i], bone->mName.data);
       printf("bone_names[%i]=%s\n", b_i, bone_names[b_i]);
@@ -165,13 +173,14 @@ printf (" %i textures\n", scene->mNumTextures);
 
       /* bone weights */
       int num_weights = (int)bone->mNumWeights;
+
       for (int w_i = 0; w_i < num_weights; w_i++){
 	aiVertexWeight weight = bone->mWeights[w_i];
 	int vertex_id = (int)weight.mVertexId;
 	// ignore weight if less than 0.5 factor
-	if(weight.mWeight >= 0.5f){
-	  bone_ids[vertex_id] = b_i;
-	}
+	// if(weight.mWeight >= 0.5f){
+	//   bone_ids[vertex_id] = b_i;
+	// }
       }
     }
 
@@ -189,9 +198,11 @@ printf (" %i textures\n", scene->mNumTextures);
     glVertexAttribIPointer(3, 1, GL_INT, 0, NULL);
     glEnableVertexAttribArray (3);
     free (bone_ids);
+  } else {
+    std::cout << "No bones detected" << std::endl;
   }
+  
  
-
   aiReleaseImport(scene);
   printf("mesh loaded\n");
   return true;
@@ -242,13 +253,15 @@ int main() {
 
 	float cam_speed = 1.0f;			 // 1 unit per second
 	float cam_yaw_speed = 10.0f; // 10 degrees per second
-	float cam_pos[] = { 0.0f, 2.0f,
-											5.0f }; // don't start at zero, or we will be too close
-	float cam_yaw = 0.0f;				// y-rotation in degrees
+	float cam_pos[] = { 0.0f, -1.0f, 5.0f }; // don't start at zero, or we will be too close
+	float cam_yaw = 5.0f;				// y-rotation in degrees
 	mat4 T =
-		translate( identity_mat4(), vec3( -cam_pos[0], -cam_pos[1], -cam_pos[2] ) );
+	  translate( identity_mat4(), vec3(-cam_pos[0], -cam_pos[1], -cam_pos[2] ) );
+
 	mat4 R = rotate_y_deg( identity_mat4(), -cam_yaw );
+
 	mat4 view_mat = R * T;
+
 
 	int view_mat_location = glGetUniformLocation( shader_programme, "view" );
 	glUseProgram( shader_programme );
@@ -267,31 +280,55 @@ int main() {
         ( load_texture( "../resources/mario_main.png.001.png", &tex_a ) );
         glBindTexture( GL_TEXTURE_2D, tex_a );
 
+	int bone_matrices_locations[MAX_BONES];
+	float identity[] = {
+	1.0f, 0.0f, 0.0f, 0.0f, // first column
+	  0.0f, 1.0f, 0.0f, 0.0f, // second column
+	  0.0f, 0.0f, 1.0f, 0.0f, // third column
+	  0.0f, 0.0f, 0.0f, 1.0f // fourth column
+	};
+	// reset all the bone matrices
+	glUseProgram(shader_programme);
+	char name[64];
+
+	for (int i = 0; i < MAX_BONES; i++){
+	  sprintf (name, "bone_matrices[%i]", i);
+	  bone_matrices_locations[i] = glGetUniformLocation (shader_programme, name);
+	  glUniformMatrix4fv (bone_matrices_locations[i], 1, GL_FALSE, identity);
+
+	}
+
+	float theta = 0.0f;
+	float rot_speed = 50.0f;
+	mat4 left_ear_mat = identity_mat4();
+
+	glm::mat4 trans = glm::mat4(1.0f);
+	trans = glm::rotate(trans, glm::radians(-90.0f), glm::vec3(1.0, 0.0, 0.0));
+	unsigned int transformLoc = glGetUniformLocation(shader_programme, "transform");
+	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
 
 	while ( !glfwWindowShouldClose( g_window ) ) {
 		static double previous_seconds = glfwGetTime();
 		double current_seconds = glfwGetTime();
 		double elapsed_seconds = current_seconds - previous_seconds;
 		previous_seconds = current_seconds;
-
 		_update_fps_counter( g_window );
 
 		// wipe the drawing surface clear
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
+		
 		glUseProgram(shader_programme);
 		glBindVertexArray(monkey_vao);
 		glDrawArrays( GL_TRIANGLES, 0, monkey_point_count);
 		
 		//glViewport( 0, 0, g_gl_width, g_gl_height );
-
 	     		
 		// update other events like input handling
 		glfwPollEvents();
 
 		// put the stuff we've been drawing onto the display
 		glfwSwapBuffers( g_window );
-
 
 				// control keys
 		bool cam_moved = false;
@@ -326,13 +363,22 @@ int main() {
 		if ( glfwGetKey( g_window, GLFW_KEY_RIGHT ) ) {
 			cam_yaw -= cam_yaw_speed * elapsed_seconds;
 			cam_moved = true;
+			
 		}
+		if(glfwGetKey(g_window, GLFW_KEY_SPACE)){
+		  theta += rot_speed * elapsed_seconds;
+		  left_ear_mat = rotate_z_deg (identity_mat4(), theta);
+		  glUseProgram (shader_programme);
+		  glUniformMatrix4fv (bone_matrices_locations[8], 1, GL_FALSE, left_ear_mat.m);
+		  //std::cout << "Pressed space" << std::endl;
+		}
+				
 		// update view matrix
 		if ( cam_moved ) {
-			mat4 T = translate( identity_mat4(), vec3( -cam_pos[0], -cam_pos[1],
-																								 -cam_pos[2] ) ); // cam translation
-			mat4 R = rotate_y_deg( identity_mat4(), -cam_yaw );					//
-			mat4 view_mat = R * T;
+		  mat4 T = translate( identity_mat4(), vec3( -cam_pos[0], -cam_pos[1],																								 -cam_pos[2] ) ); // cam translation
+			mat4 R = rotate_y_deg( identity_mat4(), -cam_yaw );		    
+			mat4 view_mat =  R * T;
+			
 			glUniformMatrix4fv( view_mat_location, 1, GL_FALSE, view_mat.m );
 		}
 
@@ -340,7 +386,6 @@ int main() {
 		if ( GLFW_PRESS == glfwGetKey( g_window, GLFW_KEY_ESCAPE ) ) {
 		  glfwSetWindowShouldClose( g_window, 1 );
 		}
-
 	}
 
 	// close GL context and any other GLFW resources
