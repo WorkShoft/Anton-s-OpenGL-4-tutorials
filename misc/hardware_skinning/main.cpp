@@ -23,7 +23,6 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <stdlib.h>
-
 #define MESH_FILE "Mario2animated.obj"
 #define GL_LOG_FILE "gl.log"
 #define VERTEX_SHADER_FILE "test_vs.glsl"
