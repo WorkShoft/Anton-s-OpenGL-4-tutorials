@@ -24,7 +24,7 @@
 #include <assimp/postprocess.h>
 #include <stdlib.h>
 
-#define MESH_FILE "luigi.obj"
+#define MESH_FILE "Mario2animated.obj"
 #define GL_LOG_FILE "gl.log"
 #define VERTEX_SHADER_FILE "test_vs.glsl"
 #define FRAGMENT_SHADER_FILE "test_fs.glsl"
@@ -181,8 +181,8 @@ int main() {
 
 	float cam_speed = 1.0f;			 // 1 unit per second
 	float cam_yaw_speed = 10.0f; // 10 degrees per second
-	float cam_pos[] = { 0.0f, 50.0f,
-											100.0f }; // don't start at zero, or we will be too close
+	float cam_pos[] = { 0.0f, 2.0f,
+											5.0f }; // don't start at zero, or we will be too close
 	float cam_yaw = 0.0f;				// y-rotation in degrees
 	mat4 T =
 		translate( identity_mat4(), vec3( -cam_pos[0], -cam_pos[1], -cam_pos[2] ) );
@@ -195,6 +195,16 @@ int main() {
 	int proj_mat_location = glGetUniformLocation( shader_programme, "proj" );
 	glUseProgram( shader_programme );
 	glUniformMatrix4fv( proj_mat_location, 1, GL_FALSE, proj_mat );
+
+
+	// load textures
+	int tex_a_location = glGetUniformLocation( shader_programme, "texture1" );	
+	glUniform1i( tex_a_location, 0 );
+
+        GLuint tex_a;
+        glActiveTexture( GL_TEXTURE0 );
+        ( load_texture( "mario_main.png.001.png", &tex_a ) );
+        glBindTexture( GL_TEXTURE_2D, tex_a );
 
 
 	while ( !glfwWindowShouldClose( g_window ) ) {
@@ -210,7 +220,7 @@ int main() {
 
 		glUseProgram(shader_programme);
 		glBindVertexArray(monkey_vao);
-		glDrawArrays(GL_TRIANGLES, 0, monkey_point_count);
+		glDrawArrays( GL_TRIANGLES, 0, monkey_point_count);
 		
 		//glViewport( 0, 0, g_gl_width, g_gl_height );
 
