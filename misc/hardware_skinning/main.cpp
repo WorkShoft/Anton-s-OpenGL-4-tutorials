@@ -23,7 +23,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <stdlib.h>
-#define MESH_FILE "Mario2animated.obj"
+#define MESH_FILE "../resources/Mario2animated.obj"
 #define GL_LOG_FILE "gl.log"
 #define VERTEX_SHADER_FILE "test_vs.glsl"
 #define FRAGMENT_SHADER_FILE "test_fs.glsl"
@@ -202,7 +202,7 @@ int main() {
 
         GLuint tex_a;
         glActiveTexture( GL_TEXTURE0 );
-        ( load_texture( "mario_main.png.001.png", &tex_a ) );
+        ( load_texture( "../resources/mario_main.png.001.png", &tex_a ) );
         glBindTexture( GL_TEXTURE_2D, tex_a );
 
 
