@@ -3,14 +3,28 @@
 layout(location = 0) in vec3 vertex_position;
 layout(location = 1) in vec3 vertex_normal;
 layout(location = 2) in vec2 texture_coord;
+layout(location = 3) in int bone_id;
 
-uniform mat4 view, proj;
+uniform mat4 model, view, proj, transform;
+// a deformation matrix for each bone:
+uniform mat4 bone_matrices[32];
 
+out vec3 colour;
 out vec3 normal;
 out vec2 st;
 
 void main() {
 	st = texture_coord;
 	normal = vertex_normal;
-	gl_Position = proj * view * vec4 (vertex_position, 1.0);
+
+	if(bone_id == 0) {
+	  colour.r = 1.0;
+	} else if(bone_id == 1){
+	  colour.g = 1.0;
+	} else if(bone_id == 2){
+	  colour.b = 1.0;
+	}
+
+	gl_Position = proj * view * transform * vec4 (vertex_position, 1.0);
+	//gl_Position = proj * view * model * bone_matrices[bone_id] * vec4 (vertex_position, 1.0);
 }
