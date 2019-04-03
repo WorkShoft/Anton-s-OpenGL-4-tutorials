@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/mikel/opengl/anton/misc/hardware_skinning
+CMAKE_SOURCE_DIR = /home/mikel/opengl/anton_own/misc/hardware_skinning
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/mikel/opengl/anton/misc/hardware_skinning
+CMAKE_BINARY_DIR = /home/mikel/opengl/anton_own/misc/hardware_skinning
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mikel/opengl/anton/misc/hardware_skinning/CMakeFiles /home/mikel/opengl/anton/misc/hardware_skinning/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mikel/opengl/anton_own/misc/hardware_skinning/CMakeFiles /home/mikel/opengl/anton_own/misc/hardware_skinning/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/mikel/opengl/anton/misc/hardware_skinning/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/mikel/opengl/anton_own/misc/hardware_skinning/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named main
+# Target rules for targets named skin
 
 # Build rule for target.
-main: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 main
-.PHONY : main
+skin: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 skin
+.PHONY : skin
 
 # fast build rule for target.
-main/fast:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
-.PHONY : main/fast
+skin/fast:
+	$(MAKE) -f CMakeFiles/skin.dir/build.make CMakeFiles/skin.dir/build
+.PHONY : skin/fast
 
 gl_utils.o: gl_utils.cpp.o
 
@@ -129,7 +129,7 @@ gl_utils.o: gl_utils.cpp.o
 
 # target to build an object file
 gl_utils.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/gl_utils.cpp.o
+	$(MAKE) -f CMakeFiles/skin.dir/build.make CMakeFiles/skin.dir/gl_utils.cpp.o
 .PHONY : gl_utils.cpp.o
 
 gl_utils.i: gl_utils.cpp.i
@@ -138,7 +138,7 @@ gl_utils.i: gl_utils.cpp.i
 
 # target to preprocess a source file
 gl_utils.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/gl_utils.cpp.i
+	$(MAKE) -f CMakeFiles/skin.dir/build.make CMakeFiles/skin.dir/gl_utils.cpp.i
 .PHONY : gl_utils.cpp.i
 
 gl_utils.s: gl_utils.cpp.s
@@ -147,7 +147,7 @@ gl_utils.s: gl_utils.cpp.s
 
 # target to generate assembly for a file
 gl_utils.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/gl_utils.cpp.s
+	$(MAKE) -f CMakeFiles/skin.dir/build.make CMakeFiles/skin.dir/gl_utils.cpp.s
 .PHONY : gl_utils.cpp.s
 
 main.o: main.cpp.o
@@ -156,7 +156,7 @@ main.o: main.cpp.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.o
+	$(MAKE) -f CMakeFiles/skin.dir/build.make CMakeFiles/skin.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -165,7 +165,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.i
+	$(MAKE) -f CMakeFiles/skin.dir/build.make CMakeFiles/skin.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -174,7 +174,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/main.cpp.s
+	$(MAKE) -f CMakeFiles/skin.dir/build.make CMakeFiles/skin.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 maths_funcs.o: maths_funcs.cpp.o
@@ -183,7 +183,7 @@ maths_funcs.o: maths_funcs.cpp.o
 
 # target to build an object file
 maths_funcs.cpp.o:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/maths_funcs.cpp.o
+	$(MAKE) -f CMakeFiles/skin.dir/build.make CMakeFiles/skin.dir/maths_funcs.cpp.o
 .PHONY : maths_funcs.cpp.o
 
 maths_funcs.i: maths_funcs.cpp.i
@@ -192,7 +192,7 @@ maths_funcs.i: maths_funcs.cpp.i
 
 # target to preprocess a source file
 maths_funcs.cpp.i:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/maths_funcs.cpp.i
+	$(MAKE) -f CMakeFiles/skin.dir/build.make CMakeFiles/skin.dir/maths_funcs.cpp.i
 .PHONY : maths_funcs.cpp.i
 
 maths_funcs.s: maths_funcs.cpp.s
@@ -201,7 +201,7 @@ maths_funcs.s: maths_funcs.cpp.s
 
 # target to generate assembly for a file
 maths_funcs.cpp.s:
-	$(MAKE) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/maths_funcs.cpp.s
+	$(MAKE) -f CMakeFiles/skin.dir/build.make CMakeFiles/skin.dir/maths_funcs.cpp.s
 .PHONY : maths_funcs.cpp.s
 
 # Help Target
@@ -211,7 +211,7 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... main"
+	@echo "... skin"
 	@echo "... edit_cache"
 	@echo "... gl_utils.o"
 	@echo "... gl_utils.i"

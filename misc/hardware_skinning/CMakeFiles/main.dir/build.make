@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/mikel/opengl/anton/misc/hardware_skinning
+CMAKE_SOURCE_DIR = /home/mikel/opengl/anton_own/misc/hardware_skinning
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/mikel/opengl/anton/misc/hardware_skinning
+CMAKE_BINARY_DIR = /home/mikel/opengl/anton_own/misc/hardware_skinning
 
 # Include any dependencies generated for this target.
 include CMakeFiles/main.dir/depend.make
@@ -59,16 +59,16 @@ include CMakeFiles/main.dir/flags.make
 
 CMakeFiles/main.dir/main.cpp.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/main.cpp.o: main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mikel/opengl/anton/misc/hardware_skinning/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/main.dir/main.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/main.dir/main.cpp.o -c /home/mikel/opengl/anton/misc/hardware_skinning/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mikel/opengl/anton_own/misc/hardware_skinning/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/main.dir/main.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/main.dir/main.cpp.o -c /home/mikel/opengl/anton_own/misc/hardware_skinning/main.cpp
 
 CMakeFiles/main.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main.dir/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mikel/opengl/anton/misc/hardware_skinning/main.cpp > CMakeFiles/main.dir/main.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mikel/opengl/anton_own/misc/hardware_skinning/main.cpp > CMakeFiles/main.dir/main.cpp.i
 
 CMakeFiles/main.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main.dir/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mikel/opengl/anton/misc/hardware_skinning/main.cpp -o CMakeFiles/main.dir/main.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mikel/opengl/anton_own/misc/hardware_skinning/main.cpp -o CMakeFiles/main.dir/main.cpp.s
 
 CMakeFiles/main.dir/main.cpp.o.requires:
 
@@ -83,16 +83,16 @@ CMakeFiles/main.dir/main.cpp.o.provides.build: CMakeFiles/main.dir/main.cpp.o
 
 CMakeFiles/main.dir/gl_utils.cpp.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/gl_utils.cpp.o: gl_utils.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mikel/opengl/anton/misc/hardware_skinning/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/main.dir/gl_utils.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/main.dir/gl_utils.cpp.o -c /home/mikel/opengl/anton/misc/hardware_skinning/gl_utils.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mikel/opengl/anton_own/misc/hardware_skinning/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/main.dir/gl_utils.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/main.dir/gl_utils.cpp.o -c /home/mikel/opengl/anton_own/misc/hardware_skinning/gl_utils.cpp
 
 CMakeFiles/main.dir/gl_utils.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main.dir/gl_utils.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mikel/opengl/anton/misc/hardware_skinning/gl_utils.cpp > CMakeFiles/main.dir/gl_utils.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mikel/opengl/anton_own/misc/hardware_skinning/gl_utils.cpp > CMakeFiles/main.dir/gl_utils.cpp.i
 
 CMakeFiles/main.dir/gl_utils.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main.dir/gl_utils.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mikel/opengl/anton/misc/hardware_skinning/gl_utils.cpp -o CMakeFiles/main.dir/gl_utils.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mikel/opengl/anton_own/misc/hardware_skinning/gl_utils.cpp -o CMakeFiles/main.dir/gl_utils.cpp.s
 
 CMakeFiles/main.dir/gl_utils.cpp.o.requires:
 
@@ -107,16 +107,16 @@ CMakeFiles/main.dir/gl_utils.cpp.o.provides.build: CMakeFiles/main.dir/gl_utils.
 
 CMakeFiles/main.dir/maths_funcs.cpp.o: CMakeFiles/main.dir/flags.make
 CMakeFiles/main.dir/maths_funcs.cpp.o: maths_funcs.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mikel/opengl/anton/misc/hardware_skinning/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/main.dir/maths_funcs.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/main.dir/maths_funcs.cpp.o -c /home/mikel/opengl/anton/misc/hardware_skinning/maths_funcs.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/mikel/opengl/anton_own/misc/hardware_skinning/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/main.dir/maths_funcs.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/main.dir/maths_funcs.cpp.o -c /home/mikel/opengl/anton_own/misc/hardware_skinning/maths_funcs.cpp
 
 CMakeFiles/main.dir/maths_funcs.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/main.dir/maths_funcs.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mikel/opengl/anton/misc/hardware_skinning/maths_funcs.cpp > CMakeFiles/main.dir/maths_funcs.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/mikel/opengl/anton_own/misc/hardware_skinning/maths_funcs.cpp > CMakeFiles/main.dir/maths_funcs.cpp.i
 
 CMakeFiles/main.dir/maths_funcs.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/main.dir/maths_funcs.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mikel/opengl/anton/misc/hardware_skinning/maths_funcs.cpp -o CMakeFiles/main.dir/maths_funcs.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/mikel/opengl/anton_own/misc/hardware_skinning/maths_funcs.cpp -o CMakeFiles/main.dir/maths_funcs.cpp.s
 
 CMakeFiles/main.dir/maths_funcs.cpp.o.requires:
 
@@ -145,7 +145,7 @@ main: CMakeFiles/main.dir/build.make
 main: /usr/lib/x86_64-linux-gnu/libGL.so
 main: /usr/lib/x86_64-linux-gnu/libGLEW.so
 main: CMakeFiles/main.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/mikel/opengl/anton/misc/hardware_skinning/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/mikel/opengl/anton_own/misc/hardware_skinning/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable main"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/main.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -164,6 +164,6 @@ CMakeFiles/main.dir/clean:
 .PHONY : CMakeFiles/main.dir/clean
 
 CMakeFiles/main.dir/depend:
-	cd /home/mikel/opengl/anton/misc/hardware_skinning && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/mikel/opengl/anton/misc/hardware_skinning /home/mikel/opengl/anton/misc/hardware_skinning /home/mikel/opengl/anton/misc/hardware_skinning /home/mikel/opengl/anton/misc/hardware_skinning /home/mikel/opengl/anton/misc/hardware_skinning/CMakeFiles/main.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/mikel/opengl/anton_own/misc/hardware_skinning && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/mikel/opengl/anton_own/misc/hardware_skinning /home/mikel/opengl/anton_own/misc/hardware_skinning /home/mikel/opengl/anton_own/misc/hardware_skinning /home/mikel/opengl/anton_own/misc/hardware_skinning /home/mikel/opengl/anton_own/misc/hardware_skinning/CMakeFiles/main.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/main.dir/depend
 

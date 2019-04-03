@@ -6,5 +6,5 @@ CXX_FLAGS =   -std=gnu++11
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/mikel/opengl/anton_own/misc/hardware_skinning -I/usr/lib/include -I/home/mikel/opengl/anton_own/misc/hardware_skinning/main 
+CXX_INCLUDES = -I/home/mikel/opengl/anton_own/misc/hardware_skinning -I/home/mikel/opengl/anton_own/misc/hardware_skinning/../common/include -I/usr/lib/include 
 

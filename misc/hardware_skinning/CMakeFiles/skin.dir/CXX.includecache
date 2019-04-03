@@ -39,13 +39,11 @@ GLFW/glfw3.h
 -
 assert.h
 -
-stdio.h
+assimp/cimport.h
 -
-stdlib.h
+assimp/postprocess.h
 -
-string.h
--
-iostream
+assimp/scene.h
 -
 glm/glm.hpp
 -
@@ -53,15 +51,11 @@ glm/gtc/matrix_transform.hpp
 -
 glm/gtc/type_ptr.hpp
 -
-math.h
--
-assimp/cimport.h
--
-assimp/scene.h
--
-assimp/postprocess.h
+stdio.h
 -
 stdlib.h
+-
+math.h
 -
 
 /home/mikel/opengl/anton_own/misc/hardware_skinning/maths_funcs.cpp

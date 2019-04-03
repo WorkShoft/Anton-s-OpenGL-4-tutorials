@@ -39,8 +39,8 @@ void print_shader_info_log( GLuint shader_index );
 bool create_shader( const char *file_name, GLuint *shader, GLenum type );
 bool is_programme_valid( GLuint sp );
 bool create_programme( GLuint vert, GLuint frag, GLuint *programme );
+bool load_texture( const char *file_name, GLuint *tex );
 /* just use this func to create most shaders; give it vertex and frag files */
 GLuint create_programme_from_files( const char *vert_file_name,
 																		const char *frag_file_name );
-bool load_texture( const char *file_name, GLuint *tex );
 #endif
