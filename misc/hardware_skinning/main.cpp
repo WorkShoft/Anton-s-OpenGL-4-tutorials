@@ -539,9 +539,8 @@ int main() {
 		bool monkey_moved = false;
 		if ( glfwGetKey( g_window, 'Z' ) ) {
 			theta += rot_speed * elapsed_seconds;
-			//g_local_anims[0] = rotate_z_deg( identity_mat4(), theta );
-			g_local_anims[0] = rotate_x_deg( identity_mat4(), -theta );
-			g_local_anims[5] = rotate_x_deg( identity_mat4(), theta );
+			g_local_anims[0] = rotate_z_deg (identity_mat4 (), theta);
+			g_local_anims[1] = rotate_z_deg (identity_mat4 (), -theta);
 			monkey_moved = true;
 		}
 		if ( glfwGetKey( g_window, 'X' ) ) {
