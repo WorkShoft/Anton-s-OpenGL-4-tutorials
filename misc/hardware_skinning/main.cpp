@@ -418,7 +418,7 @@ int main() {
 
         GLuint tex_a;
         glActiveTexture( GL_TEXTURE0 );
-        ( load_texture( "../32_skinnng_part_three/mario_main.png", &tex_a ) );
+        ( load_texture( "mario_main.png", &tex_a ) );
 	//( load_texture( "Untitled.png", &tex_a ) );
 
         glBindTexture( GL_TEXTURE_2D, tex_a );
@@ -467,6 +467,9 @@ int main() {
 		double current_seconds = glfwGetTime();
 		double elapsed_seconds = current_seconds - previous_seconds;
 		previous_seconds = current_seconds;
+
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
 
 		_update_fps_counter( g_window );
 		// wipe the drawing surface clear
@@ -536,14 +539,15 @@ int main() {
 		bool monkey_moved = false;
 		if ( glfwGetKey( g_window, 'Z' ) ) {
 			theta += rot_speed * elapsed_seconds;
-			g_local_anims[0] = rotate_z_deg( identity_mat4(), theta );
+			//g_local_anims[0] = rotate_z_deg( identity_mat4(), theta );
 			g_local_anims[0] = rotate_x_deg( identity_mat4(), -theta );
+			g_local_anims[5] = rotate_x_deg( identity_mat4(), theta );
 			monkey_moved = true;
 		}
 		if ( glfwGetKey( g_window, 'X' ) ) {
 			theta -= rot_speed * elapsed_seconds;
-			g_local_anims[1] = rotate_y_deg( identity_mat4(), theta );
-			//g_local_anims[1] = rotate_z_deg( identity_mat4(), -theta );
+			g_local_anims[3] = rotate_x_deg( identity_mat4(), theta );
+			
 			monkey_moved = true;
 		}
 		if ( glfwGetKey( g_window, 'C' ) ) {
