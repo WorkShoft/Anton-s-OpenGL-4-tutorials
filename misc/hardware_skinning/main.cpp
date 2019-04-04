@@ -49,14 +49,23 @@ mat4 g_local_anims[MAX_BONES];
 */
 struct Skeleton_Node;
 struct Skeleton_Node {
-	Skeleton_Node *children[MAX_BONES];
-	/* name of the bone - might be useful to remember for doing interesting stuff
-	in your programme */
-	char name[64];
-	int num_children;
-	/* if this node corresponds to one of our weight-painted bones then we give
-	the index of that (the bone_ID) here, otherwrise it is set to -1 */
-	int bone_index;
+  Skeleton_Node *children[MAX_BONES];
+  vec3* pos_keys;
+  versor* rot_keys;
+  vec3* sca_keys;
+  double* pos_key_times;
+  double* rot_key_times;
+  double* sca_key_times;
+  int num_pos_keys;
+  int num_rot_keys;
+  int num_sca_keys;
+  /* name of the bone - might be useful to remember for doing interesting stuff
+     in your programme */
+  char name[64];
+  int num_children;
+  /* if this node corresponds to one of our weight-painted bones then we give
+     the index of that (the bone_ID) here, otherwrise it is set to -1 */
+  int bone_index;
 };
 
 /* recursive function to pull all of AssImps 'node' hierarchy out. AssImp's
@@ -67,8 +76,25 @@ index of that bone. */
 bool import_skeleton_node( aiNode *assimp_node, Skeleton_Node **skeleton_node,
 													 int bone_count, char bone_names[][64] );
 
+
+Skeleton_Node* find_node_in_skeleton (Skeleton_Node* root, const char* node_name){
+  assert(root);
+
+  if(strcmp (node_name, root->name) == 0){
+    return root;
+  }
+
+  for (int i = 0; i < root->num_children; i++){
+    Skeleton_Node* child = find_node_in_skeleton (root->children[i], node_name);
+    if(child != NULL){
+      return child;
+    }
+  }
+  return NULL;
+}
+
 bool import_skeleton_node( aiNode *assimp_node, Skeleton_Node **skeleton_node,
-													 int bone_count, char bone_names[][64] ) {
+ 			   int bone_count, char bone_names[][64] ) {
 	// allocate memory for node
 	Skeleton_Node *temp = (Skeleton_Node *)malloc( sizeof( Skeleton_Node ) );
 
@@ -99,7 +125,7 @@ bool import_skeleton_node( aiNode *assimp_node, Skeleton_Node **skeleton_node,
 	bool has_useful_child = false;
 	for ( int i = 0; i < (int)assimp_node->mNumChildren; i++ ) {
 		if ( import_skeleton_node( assimp_node->mChildren[i],
-															 &temp->children[temp->num_children], bone_count,
+					   &temp->children[temp->num_children], bone_count,
 															 bone_names ) ) {
 			has_useful_child = true;
 			temp->num_children++;
@@ -161,10 +187,10 @@ mat4 convert_assimp_matrix( aiMatrix4x4 m ) {
 /* load a mesh using the assimp library */
 bool load_mesh( const char *file_name, GLuint *vao, int *point_count,
 								mat4 *bone_offset_mats, int *bone_count,
-								Skeleton_Node **root_node ) {
+		Skeleton_Node **root_node, double* anim_duration ) {
 	const aiScene *scene = aiImportFile( file_name, aiProcess_Triangulate );
 	if ( !scene ) {
-		fprintf( stderr, "ERROR: reading mesh %s\n", file_name );
+	  fprintf( stderr, "ERROR: reading mesh %s\n", file_name );
 		return false;
 	}
 	printf( "  %i animations\n", scene->mNumAnimations );
@@ -270,6 +296,61 @@ bool load_mesh( const char *file_name, GLuint *vao, int *point_count,
 			fprintf( stderr, "ERROR: could not import node tree from mesh\n" );
 		} // endif
 
+		if (scene->mNumAnimations > 0){
+		  aiAnimation* anim = scene->mAnimations[0];
+		  printf("animation name:%s\n", anim->mName.C_Str ());
+		  printf("animation has %i node channels\n", anim->mNumChannels);
+		  printf("animation has %i mesh channels\n", anim->mNumMeshChannels);
+		  printf("animation duration %f\n", anim->mDuration);
+		  printf("ticks per second %f\n", anim->mTicksPerSecond);
+
+		  *anim_duration = anim->mDuration;
+
+		  for(int i = 0; i < (int)anim->mNumChannels; i++){
+		    aiNodeAnim* chan = anim->mChannels[i];
+		    // find the matching node in our skeleton by name
+		    Skeleton_Node* sn = find_node_in_skeleton (
+							       *root_node, chan->mNodeName.C_Str());
+		    assert(sn);
+
+		    sn->num_pos_keys = chan->mNumPositionKeys;
+		    sn->num_rot_keys = chan->mNumRotationKeys;
+		    sn->num_sca_keys = chan->mNumScalingKeys;
+
+		    //allocate memory
+		    sn->pos_keys = (vec3*)malloc (sizeof (vec3) * sn -> num_pos_keys);
+		    sn->rot_keys = (versor*)malloc (sizeof (versor) * sn -> num_rot_keys);
+		    sn->sca_keys = (vec3*)malloc (sizeof (vec3) * sn -> num_sca_keys);
+		    sn->pos_key_times = (double*)malloc (sizeof (double) * sn->num_pos_keys);
+		    sn->rot_key_times = (double*)malloc (sizeof (double) * sn->num_rot_keys);
+		    sn->sca_key_times = (double*)malloc (sizeof (double) * sn->num_sca_keys);
+
+		    for (int i = 0; i < sn->num_pos_keys; i++){
+		      aiVectorKey key = chan->mPositionKeys[i];
+		      sn->pos_keys[i].v[0] = key.mValue.x;
+		      sn->pos_keys[i].v[1] = key.mValue.y;
+		      sn->pos_keys[i].v[2] = key.mValue.z;
+		      sn->pos_key_times[i] = key.mTime;
+		    }
+		    // add rotation keys to node
+		    for (int i = 0; i < sn->num_rot_keys; i++){
+		      aiQuatKey key = chan->mRotationKeys[i];
+		      sn->rot_keys[i].q[0] = key.mValue.w;
+		      sn->rot_keys[i].q[1] = key.mValue.x;
+		      sn->rot_keys[i].q[2] = key.mValue.y;
+		      sn->rot_keys[i].q[3] = key.mValue.z;
+		      sn->rot_key_times[i] = key.mTime;
+		    }
+		    for (int i = 0; i < sn->num_sca_keys; i++){
+		      aiVectorKey key = chan->mScalingKeys[i];
+		      sn->sca_keys[i].v[0] = key.mValue.x;
+		      sn->sca_keys[i].v[1] = key.mValue.y;
+		      sn->sca_keys[i].v[2] = key.mValue.z;
+		      sn->sca_key_times[i] = key.mTime;
+		    }
+		  }
+		}
+
 	} // endif hasbones
 
 	/* copy mesh data into VBOs */
@@ -349,9 +430,12 @@ int main() {
 	int monkey_point_count = 0;
 	int monkey_bone_count = 0;
 	Skeleton_Node *monkey_root_node = NULL;
-	( load_mesh( MESH_FILE, &monkey_vao, &monkey_point_count,
+
+	double monkey_anim_duration = 0.0;
+	assert(load_mesh( MESH_FILE, &monkey_vao, &monkey_point_count,
 										 monkey_bone_offset_matrices, &monkey_bone_count,
-										 &monkey_root_node ) );
+			  &monkey_root_node, &monkey_anim_duration));
+	double anim_timer = 0.0;
 	printf( "monkey bone count %i\n", monkey_bone_count );
 
 	/* create a buffer of bone positions for visualising the bones */
@@ -463,71 +547,76 @@ int main() {
 
 	while ( !glfwWindowShouldClose( g_window ) ) {
 	  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-		static double previous_seconds = glfwGetTime();
-		double current_seconds = glfwGetTime();
-		double elapsed_seconds = current_seconds - previous_seconds;
-		previous_seconds = current_seconds;
+	  static double previous_seconds = glfwGetTime();
+	  double current_seconds = glfwGetTime();
+	  double elapsed_seconds = current_seconds - previous_seconds;
+	  previous_seconds = current_seconds;
 
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+	  anim_timer += elapsed_seconds;
+	  if (anim_timer >= monkey_anim_duration){
+	    anim_timer -= monkey_anim_duration;
+	  }
+
+	  glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
 
-		_update_fps_counter( g_window );
-		// wipe the drawing surface clear
+	  _update_fps_counter( g_window );
+	  // wipe the drawing surface clear
 		
-		glViewport( 0, 0, g_gl_width, g_gl_height );
+	  glViewport( 0, 0, g_gl_width, g_gl_height );
 
-		glEnable( GL_DEPTH_TEST );
-		glUseProgram( shader_programme );
-		glBindVertexArray( monkey_vao );
-		glDrawArrays( GL_TRIANGLES, 0, monkey_point_count );
+	  glEnable( GL_DEPTH_TEST );
+	  glUseProgram( shader_programme );
+	  glBindVertexArray( monkey_vao );
+	  glDrawArrays( GL_TRIANGLES, 0, monkey_point_count );
 
-		// glDisable( GL_DEPTH_TEST );
-		// glEnable( GL_PROGRAM_POINT_SIZE );
-		// glUseProgram( bones_shader_programme );
-		// glBindVertexArray( bones_vao );
-		// glDrawArrays( GL_POINTS, 0, monkey_bone_count );
-		// glDisable( GL_PROGRAM_POINT_SIZE );
+	  // glDisable( GL_DEPTH_TEST );
+	  // glEnable( GL_PROGRAM_POINT_SIZE );
+	  // glUseProgram( bones_shader_programme );
+	  // glBindVertexArray( bones_vao );
+	  // glDrawArrays( GL_POINTS, 0, monkey_bone_count );
+	  // glDisable( GL_PROGRAM_POINT_SIZE );
 
-		// update other events like input handling
-		glfwPollEvents();
+	  // update other events like input handling
+	  glfwPollEvents();
 
-		// control keys
-		bool cam_moved = false;
-		if ( glfwGetKey( g_window, GLFW_KEY_A ) ) {
-			cam_pos[0] -= cam_speed * elapsed_seconds;
-			cam_moved = true;
-		}
-		if ( glfwGetKey( g_window, GLFW_KEY_D ) ) {
-			cam_pos[0] += cam_speed * elapsed_seconds;
-			cam_moved = true;
-		}
-		if ( glfwGetKey( g_window, GLFW_KEY_PAGE_UP ) ) {
-			cam_pos[1] += cam_speed * elapsed_seconds;
-			cam_moved = true;
-		}
-		if ( glfwGetKey( g_window, GLFW_KEY_PAGE_DOWN ) ) {
-			cam_pos[1] -= cam_speed * elapsed_seconds;
-			cam_moved = true;
-		}
-		if ( glfwGetKey( g_window, GLFW_KEY_W ) ) {
-			cam_pos[2] -= cam_speed * elapsed_seconds;
-			cam_moved = true;
-		}
-		if ( glfwGetKey( g_window, GLFW_KEY_S ) ) {
-			cam_pos[2] += cam_speed * elapsed_seconds;
-			cam_moved = true;
-		}
-		if ( glfwGetKey( g_window, GLFW_KEY_LEFT ) ) {
-			cam_yaw += cam_yaw_speed * elapsed_seconds;
-			cam_moved = true;
-		}
-		if ( glfwGetKey( g_window, GLFW_KEY_RIGHT ) ) {
-			cam_yaw -= cam_yaw_speed * elapsed_seconds;
-			cam_moved = true;
-		}
-		// update view matrix
-		if ( cam_moved ) {
-			mat4 T = translate( identity_mat4(), vec3( -cam_pos[0], -cam_pos[1],
+	  // control keys
+	  bool cam_moved = false;
+	  if ( glfwGetKey( g_window, GLFW_KEY_A ) ) {
+	    cam_pos[0] -= cam_speed * elapsed_seconds;
+	    cam_moved = true;
+	  }
+	  if ( glfwGetKey( g_window, GLFW_KEY_D ) ) {
+	    cam_pos[0] += cam_speed * elapsed_seconds;
+	    cam_moved = true;
+	  }
+	  if ( glfwGetKey( g_window, GLFW_KEY_PAGE_UP ) ) {
+	    cam_pos[1] += cam_speed * elapsed_seconds;
+	    cam_moved = true;
+	  }
+	  if ( glfwGetKey( g_window, GLFW_KEY_PAGE_DOWN ) ) {
+	    cam_pos[1] -= cam_speed * elapsed_seconds;
+	    cam_moved = true;
+	  }
+	  if ( glfwGetKey( g_window, GLFW_KEY_W ) ) {
+	    cam_pos[2] -= cam_speed * elapsed_seconds;
+	    cam_moved = true;
+	  }
+	  if ( glfwGetKey( g_window, GLFW_KEY_S ) ) {
+	    cam_pos[2] += cam_speed * elapsed_seconds;
+	    cam_moved = true;
+	  }
+	  if ( glfwGetKey( g_window, GLFW_KEY_LEFT ) ) {
+	    cam_yaw += cam_yaw_speed * elapsed_seconds;
+	    cam_moved = true;
+	  }
+	  if ( glfwGetKey( g_window, GLFW_KEY_RIGHT ) ) {
+	    cam_yaw -= cam_yaw_speed * elapsed_seconds;
+	    cam_moved = true;
+	  }
+	  // update view matrix
+	  if ( cam_moved ) {
+	    mat4 T = translate( identity_mat4(), vec3( -cam_pos[0], -cam_pos[1],
 																								 -cam_pos[2] ) ); // cam translation
 			mat4 R = rotate_y_deg( identity_mat4(), -cam_yaw );					//
 			mat4 view_mat = R * T;
